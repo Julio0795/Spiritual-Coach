@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Shield, Zap, Repeat, Calendar, X } from 'lucide-react'
 import { type LucideIcon } from 'lucide-react'
@@ -10,6 +10,8 @@ interface InsightCardProps {
   type: 'blockage' | 'strength' | 'pattern'
   observation: string
   date: string
+  index?: number
+  shouldAnimate?: boolean
 }
 
 // Helper function to get type-specific configuration
@@ -71,19 +73,57 @@ export default function InsightCard({
   type,
   observation,
   date,
+  index = 0,
+  shouldAnimate = true,
 }: InsightCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const config = getTypeConfig(type)
   const Icon = config.icon
+
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768) // md breakpoint
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // Debug logging
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('InsightCard mounted:', {
+        title,
+        shouldAnimate,
+        isMobile,
+        index,
+      })
+    }
+  }, [title, shouldAnimate, isMobile, index])
 
   return (
     <>
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        initial={
+          shouldAnimate
+            ? { opacity: 0, x: isMobile ? 0 : 20, y: isMobile ? 20 : 0 }
+            : { opacity: 1, x: 0, y: 0 }
+        }
+        animate={{ opacity: 1, x: 0, y: 0 }}
+        transition={
+          shouldAnimate
+            ? {
+                duration: 0.5,
+                delay: (index || 0) * 0.1,
+                ease: 'easeOut',
+              }
+            : { duration: 0 }
+        }
+        whileHover={{ scale: 1.02 }}
         onClick={() => setIsModalOpen(true)}
-        className={`relative overflow-hidden rounded-xl border ${config.border} backdrop-blur-sm bg-white/5 p-5 transition-colors hover:bg-white/10 cursor-pointer`}
+        className={`relative overflow-hidden rounded-xl border ${config.border} backdrop-blur-md bg-white/5 p-4 mb-4 transition-colors hover:bg-white/10 cursor-pointer`}
       >
         {/* Decorative gradient glow */}
         <div
