@@ -4,6 +4,11 @@ FEATURES
 
 -Perspectives from which to be guided
 
+-How much ai credit it uses
+
+-Path A: "Share it with the World" (Deployment)
+We push this to Vercel. It takes about 5 minutes, and you will get a live URL (e.g., soul-align.vercel.app) that you can send to your friends or use on your actual phone.
+
 -Has section that sets website for human design
 then you can stored the chart and it reads it and uses it
 
@@ -21,6 +26,10 @@ then you can stored the chart and it reads it and uses it
 
 -Read replies
 
+-for it structure its answers and show beautiful ordered and formatted like chat gpt
+
 Section for storing trauma and removing once healed and also storing goals
 
 -THe recommended api versus the one we are using
+
+-REmove it from viewing on your phone on local host
